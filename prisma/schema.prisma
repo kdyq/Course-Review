@@ -1,0 +1,347 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  STUDENT
+  INSTRUCTOR
+  MODERATOR
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+enum CourseType {
+  REQUIRED
+  ELECTIVE
+  GENERAL
+  PRACTICE
+}
+
+enum ReviewStatus {
+  PENDING
+  PUBLISHED
+  HIDDEN
+  DELETED
+}
+
+enum ReportReason {
+  PERSONAL_ATTACK
+  PRIVACY
+  AD
+  FALSE_INFO
+  OFF_TOPIC
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWING
+  RESOLVED
+  REJECTED
+}
+
+// Better Auth 核心表。User 同时承载业务角色和状态。
+model User {
+  id            String     @id
+  name          String
+  email         String     @unique
+  emailVerified Boolean    @default(false)
+  image         String?
+  username      String?    @unique
+  displayUsername String?
+  role          UserRole   @default(STUDENT)
+  status        UserStatus @default(ACTIVE)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  sessions        Session[]
+  accounts        Account[]
+  reviewsAuthored ReviewAuthor[]
+  votes           ReviewVote[]
+  reports         Report[]       @relation("Reporter")
+  handledReports  Report[]       @relation("Handler")
+  bookmarks       Bookmark[]
+  notifications   Notification[]
+  auditLogs       AuditLog[]     @relation("Actor")
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model College {
+  id          String      @id @default(cuid())
+  name        String      @unique
+  courses     Course[]
+  instructors Instructor[]
+}
+
+model Course {
+  id          String     @id @default(cuid())
+  code        String     @unique
+  name        String
+  credits     Float?
+  type        CourseType @default(ELECTIVE)
+  description String?
+  collegeId   String?
+  college     College?   @relation(fields: [collegeId], references: [id])
+  offerings   Offering[]
+  bookmarks   Bookmark[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([name])
+  @@index([collegeId])
+}
+
+model Instructor {
+  id         String   @id @default(cuid())
+  name       String
+  title      String?
+  collegeId  String?
+  college    College? @relation(fields: [collegeId], references: [id])
+  isVerified Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  offerings OfferingInstructor[]
+  responses InstructorResponse[]
+
+  @@index([name])
+}
+
+model Term {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  startsOn  DateTime?
+  endsOn    DateTime?
+  isCurrent Boolean    @default(false)
+  offerings Offering[]
+}
+
+model Offering {
+  id          String   @id @default(cuid())
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id])
+  termId      String
+  term        Term     @relation(fields: [termId], references: [id])
+  section     String   @default("01")
+  campus      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  instructors OfferingInstructor[]
+  reviews     Review[]
+
+  @@unique([courseId, termId, section])
+  @@index([courseId])
+  @@index([termId])
+}
+
+model OfferingInstructor {
+  offeringId   String
+  instructorId String
+  role         String?     @default("PRIMARY")
+  offering     Offering    @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  instructor   Instructor  @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  @@id([offeringId, instructorId])
+}
+
+model Review {
+  id             String       @id @default(cuid())
+  offeringId     String
+  offering       Offering     @relation(fields: [offeringId], references: [id])
+  difficulty     Int
+  workload       Int
+  recommendation Int
+  grading        Int?
+  teaching       Int?
+  assessment     String[]
+  content        String
+  status         ReviewStatus @default(PUBLISHED)
+  helpfulCount   Int          @default(0)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  editedAt       DateTime?
+  hiddenAt       DateTime?
+  hiddenReason   String?
+
+  author   ReviewAuthor?
+  votes    ReviewVote[]
+  tags     ReviewTag[]
+  reports  Report[]
+  response InstructorResponse?
+
+  @@index([offeringId, status, createdAt])
+  @@index([status, createdAt])
+}
+
+model ReviewAuthor {
+  reviewId   String   @id
+  userId     String
+  offeringId String
+  createdAt  DateTime @default(now())
+  review     Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, offeringId])
+  @@index([offeringId])
+}
+
+model ReviewVote {
+  reviewId  String
+  userId    String
+  createdAt DateTime @default(now())
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([reviewId, userId])
+  @@index([userId])
+}
+
+model Tag {
+  id        String      @id @default(cuid())
+  name      String      @unique
+  slug      String      @unique
+  isActive  Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  reviews   ReviewTag[]
+}
+
+model ReviewTag {
+  reviewId String
+  tagId    String
+  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  tag      Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([reviewId, tagId])
+  @@index([tagId])
+}
+
+model Report {
+  id             String       @id @default(cuid())
+  reviewId       String
+  reporterId     String
+  reason         ReportReason
+  detail         String?
+  status         ReportStatus @default(PENDING)
+  handledById    String?
+  handledAt      DateTime?
+  resolutionNote String?
+  createdAt      DateTime     @default(now())
+
+  review    Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reporter  User   @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  handledBy User?  @relation("Handler", fields: [handledById], references: [id])
+
+  @@index([reviewId])
+  @@index([status, createdAt])
+}
+
+model Bookmark {
+  userId    String
+  courseId  String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@id([userId, courseId])
+  @@index([courseId])
+}
+
+model InstructorResponse {
+  id           String       @id @default(cuid())
+  reviewId     String       @unique
+  instructorId String
+  content      String
+  status       ReviewStatus @default(PENDING)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  review     Review     @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  instructor Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  @@index([instructorId])
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  type      String
+  payload   Json?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt, createdAt])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  action     String
+  targetType String
+  targetId   String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+  actor      User?    @relation("Actor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([actorId])
+  @@index([targetType, targetId])
+  @@index([createdAt])
+}

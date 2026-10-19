@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { UserMenu } from "@/components/auth/UserMenu";
 import { NAV_LINKS, SITE_NAME, SITE_NAME_EN } from "@/lib/constants";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -43,9 +44,7 @@ export function SiteHeader() {
               </button>
             </form>
           </search>
-          <Link href="/login" className="btn btn-sm">
-            登录
-          </Link>
+          <UserMenu />
           <ThemeToggle />
         </div>
       </div>

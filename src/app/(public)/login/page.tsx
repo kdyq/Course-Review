@@ -1,20 +1,35 @@
 import type { Metadata } from "next";
+import { LoginForm } from "@/components/auth/LoginForm";
 import { PageHead } from "@/components/zine/SectionTitle";
-import { ZineLinkButton } from "@/components/zine/ZineButton";
 import { zineCardClass } from "@/components/zine/ZineCard";
 
 export const metadata: Metadata = { title: "登录" };
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const params = await searchParams;
+  const next = params.next?.startsWith("/") ? params.next : "/";
+
   return (
     <>
-      <PageHead title="登录" description="用用户名和密码登录。正式表单会在 M1 接入。" />
+      <PageHead title="登录" description="用用户名和密码登录。登录后可以写评价、点有用和举报。" />
       <section className="section section--tight">
-        <div className="shell">
-          <div className={zineCardClass({ paper: "sky", pad: true, className: "prose" })}>
-            <h2>认证正在准备</h2>
-            <p>M1 会接入 Better Auth、用户名登录和邮箱验证码服务。</p>
-            <ZineLinkButton href="/">回到首页</ZineLinkButton>
+        <div className="shell auth-grid">
+          <div className={zineCardClass({ pad: true })}>
+            <LoginForm next={next} />
+          </div>
+          <div className={zineCardClass({ paper: "butter", pad: true, className: "prose" })}>
+            <h2>本地演示账号</h2>
+            <p>
+              管理员：<span className="mono">guo / 123456</span>
+            </p>
+            <p>
+              学生：<span className="mono">student01 / Student2026</span>
+            </p>
+            <p>管理员登录后，右上角会出现“后台”入口。演示账号只用于本地开发。</p>
           </div>
         </div>
       </section>

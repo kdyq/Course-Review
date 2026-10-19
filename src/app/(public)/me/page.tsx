@@ -1,28 +1,45 @@
 import type { Metadata } from "next";
-import { EmptyState } from "@/components/zine/EmptyState";
+import { VerifyEmailForm } from "@/components/auth/VerifyEmailForm";
 import { PageHead } from "@/components/zine/SectionTitle";
 import { ZineLinkButton } from "@/components/zine/ZineButton";
+import { zineCardClass } from "@/components/zine/ZineCard";
+import { ROLE_LABELS } from "@/lib/constants";
+import { requireUser } from "@/lib/session";
 
-export const metadata: Metadata = { title: "个人中心" };
+export const metadata: Metadata = { title: "我的" };
 
-export default function MePage() {
+export default async function MePage() {
+  const session = await requireUser();
+  const user = session.user as {
+    username?: string | null;
+    name?: string;
+    role?: string | null;
+    email?: string;
+    emailVerified?: boolean;
+  };
+
   return (
     <>
-      <PageHead title="我的" description="我的评价、收藏和通知。需要登录后才能查看。" />
+      <PageHead title="我的" description="账号信息和个人内容入口。" />
       <section className="section section--tight">
-        <div className="shell">
-          <EmptyState
-            title="登录后查看"
-            description="认证和个人中心会在 M1 与 M3 接入。现在可以先注册或登录。"
-            action={
-              <div className="row">
-                <ZineLinkButton href="/login">登录</ZineLinkButton>
-                <ZineLinkButton href="/register" variant="secondary">
-                  注册
-                </ZineLinkButton>
-              </div>
-            }
-          />
+        <div className="shell grid-2">
+          <div className={zineCardClass({ paper: "mint", pad: true, className: "prose" })}>
+            <h2>你好，{user.username ?? user.name}</h2>
+            <p>角色：{ROLE_LABELS[user.role ?? "STUDENT"] ?? "学生"}</p>
+            <p>邮箱：{user.email}</p>
+            <p>我的评价、收藏和通知会在后续里程碑接入。现在可以先去翻课程。</p>
+            <div className="row section-action">
+              <ZineLinkButton href="/courses">去翻课程</ZineLinkButton>
+              <ZineLinkButton href="/leaderboards" variant="secondary">
+                看榜单
+              </ZineLinkButton>
+            </div>
+          </div>
+
+          <div className={zineCardClass({ paper: "sky", pad: true })}>
+            <h2 className="review-card__title">邮箱验证</h2>
+            <VerifyEmailForm email={user.email ?? ""} verified={Boolean(user.emailVerified)} />
+          </div>
         </div>
       </section>
     </>
