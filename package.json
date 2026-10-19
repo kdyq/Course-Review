@@ -1,0 +1,23 @@
+{
+  "name": "course-review",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Student course review system design prototypes",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "capture": "node scripts/capture.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@phosphor-icons/web": "^2.1.2",
+    "gsap": "^3.15.0"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.64.1"
+  }
+}

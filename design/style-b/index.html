@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>课代表 · 学生课程评价</title>
+  <meta name="description" content="匿名评价、真实分数、按学期筛选的课程评价工具。">
+  <link rel="stylesheet" href="/node_modules/@phosphor-icons/web/src/regular/style.css">
+  <link rel="stylesheet" href="/node_modules/@phosphor-icons/web/src/fill/style.css">
+  <link rel="stylesheet" href="./styles.css">
+  <script>
+    try {
+      if (localStorage.getItem("course-review-theme") === "dark") {
+        document.documentElement.dataset.theme = "dark";
+      }
+    } catch (error) {
+      document.documentElement.dataset.theme = "light";
+    }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="#" aria-label="课代表首页">
+        <span class="brand-mark" aria-hidden="true">课</span>
+        <span class="brand-name">课代表</span>
+      </a>
+
+      <nav class="nav-links" aria-label="主导航">
+        <a href="#courses">课程库</a>
+        <a href="#ranking">排行榜</a>
+        <a href="#trust">评价规范</a>
+      </nav>
+
+      <form class="nav-search" role="search">
+        <label class="sr-only" for="nav-search">搜索课程或教师</label>
+        <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+        <input id="nav-search" type="search" placeholder="搜索课程或教师" autocomplete="off">
+      </form>
+
+      <div class="nav-actions">
+        <a class="nav-cta" href="#review">写评价</a>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="切换到暗黑模式" aria-pressed="false">
+          <i class="ph ph-moon icon-moon" aria-hidden="true"></i>
+          <i class="ph ph-sun icon-sun" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero shell" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <span class="eyebrow">学生课程评价</span>
+        <h1 id="hero-title" class="display">
+          <span class="line"><span>选课之前，</span></span>
+          <span class="line"><span>先听上过的人怎么说。</span></span>
+        </h1>
+        <p class="hero-sub">匿名评价、真实分数、按学期筛选。</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#courses" data-search-jump>搜索课程 <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+          <a class="btn btn-secondary" href="#review">写评价</a>
+        </div>
+      </div>
+
+      <div class="hero-bento" aria-label="课程评价数据预览">
+        <article class="bento-card bento-feature">
+          <div class="bento-meta"><span>CS 301</span><span>计算机学院</span></div>
+          <h2>操作系统</h2>
+          <p class="bento-teacher">王砚秋</p>
+          <div class="bento-score">
+            <strong data-count="4.6" data-decimals="1">4.6</strong>
+            <div>
+              <span class="stars" role="img" aria-label="推荐度 4.6 分，满分 5 分">
+                <i class="ph-fill ph-star" aria-hidden="true"></i>
+                <i class="ph-fill ph-star" aria-hidden="true"></i>
+                <i class="ph-fill ph-star" aria-hidden="true"></i>
+                <i class="ph-fill ph-star" aria-hidden="true"></i>
+                <i class="ph-fill ph-star-half" aria-hidden="true"></i>
+              </span>
+              <span class="bento-count">128 条评价</span>
+            </div>
+          </div>
+          <ul class="tag-list">
+            <li>干货多</li>
+            <li>作业多</li>
+            <li>不点名</li>
+          </ul>
+          <p class="bento-quote">“作业偏多，但每道题都能在实验里找到对应。”</p>
+          <div class="bento-history" aria-label="近三个学期推荐度">
+            <div><span>2025 秋</span><strong>4.7</strong></div>
+            <div><span>2025 春</span><strong>4.5</strong></div>
+            <div><span>2024 秋</span><strong>4.4</strong></div>
+          </div>
+          <div class="bento-distribution" aria-label="推荐度分布">
+            <div class="bento-bars" aria-hidden="true">
+              <span style="--h: 12%"></span>
+              <span style="--h: 20%"></span>
+              <span style="--h: 38%"></span>
+              <span style="--h: 72%"></span>
+              <span style="--h: 96%"></span>
+            </div>
+            <div class="bento-dist-labels" aria-hidden="true">
+              <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+            </div>
+          </div>
+          <a class="inline-link" href="#courses">查看 128 条评价 <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+        </article>
+
+        <article class="bento-card bento-stat bento-cobalt">
+          <strong data-count="1286" data-format="comma">1,286</strong>
+          <span>条匿名评价</span>
+          <p>覆盖 312 门课程</p>
+        </article>
+
+        <figure class="bento-card bento-photo">
+          <img src="../assets/campus-hall.jpg" alt="毕业季的学生在草地上抛帽">
+        </figure>
+
+        <article class="bento-card bento-stat bento-lime">
+          <strong data-count="312">312</strong>
+          <span>门课程</span>
+          <p>覆盖 12 个学院</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="courses" class="section shell" aria-labelledby="courses-title">
+      <div class="section-head">
+        <h2 id="courses-title">从课程库开始</h2>
+        <a class="inline-link" href="#ranking">查看完整榜单 <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+      </div>
+
+      <div class="search-panel">
+        <form class="course-search" role="search" id="course-search-form">
+          <label for="course-search">搜索课程、教师或课程代码</label>
+          <div class="search-row">
+            <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+            <input id="course-search" type="search" placeholder="例如：操作系统、王砚秋、CS 301" autocomplete="off">
+            <button class="btn btn-primary" type="submit">搜索课程</button>
+          </div>
+        </form>
+
+        <div class="filter-row" role="group" aria-label="按学院筛选">
+          <button class="filter-pill is-active" type="button" data-filter="all" aria-pressed="true">全部</button>
+          <button class="filter-pill" type="button" data-filter="cs" aria-pressed="false">计算机</button>
+          <button class="filter-pill" type="button" data-filter="econ" aria-pressed="false">经济</button>
+          <button class="filter-pill" type="button" data-filter="humanities" aria-pressed="false">人文</button>
+          <button class="filter-pill" type="button" data-filter="science" aria-pressed="false">理学</button>
+        </div>
+      </div>
+
+      <div class="course-grid" data-course-grid>
+        <article class="course-card course-feature" data-dept="cs" data-search="操作系统 王砚秋 cs 301 计算机">
+          <figure class="course-photo">
+            <img src="../assets/library-study.jpg" alt="图书馆书架前的学生">
+          </figure>
+          <div class="course-body">
+            <div class="course-meta"><span>CS 301</span><span>计算机学院</span></div>
+            <h3>操作系统</h3>
+            <p class="course-teacher">王砚秋</p>
+            <p class="course-line">把进程调度讲成现场演示，实验和考试对得上。</p>
+            <div class="rating-row">
+              <strong>4.6</strong>
+              <span class="stars" role="img" aria-label="推荐度 4.6 分，满分 5 分">
+                <i class="ph-fill ph-star" aria-hidden="true"></i>
+                <i class="ph-fill ph-star" aria-hidden="true"></i>
+                <i class="ph-fill ph-star" aria-hidden="true"></i>
+                <i class="ph-fill ph-star" aria-hidden="true"></i>
+                <i class="ph-fill ph-star-half" aria-hidden="true"></i>
+              </span>
+              <span>128 条评价</span>
+            </div>
+            <ul class="tag-list"><li>干货多</li><li>作业多</li><li>不点名</li></ul>
+          </div>
+        </article>
+
+        <article class="course-card" data-dept="humanities" data-search="中国现代文学 陈嘉禾 lit 118 人文">
+          <div class="course-meta"><span>LIT 118</span><span>人文学院</span></div>
+          <h3>中国现代文学</h3>
+          <p class="course-teacher">陈嘉禾</p>
+          <p class="course-line">论文反馈认真，课堂讨论比想象中密。</p>
+          <div class="rating-row">
+            <strong>4.7</strong>
+            <span class="stars" role="img" aria-label="推荐度 4.7 分，满分 5 分">
+              <i class="ph-fill ph-star" aria-hidden="true"></i>
+              <i class="ph-fill ph-star" aria-hidden="true"></i>
+              <i class="ph-fill ph-star" aria-hidden="true"></i>
+              <i class="ph-fill ph-star" aria-hidden="true"></i>
+              <i class="ph-fill ph-star-half" aria-hidden="true"></i>
+            </span>
+            <span>74 条</span>
+          </div>
+          <ul class="tag-list"><li>论文多</li><li>给分好</li></ul>
+        </article>
+
+        <article class="course-card course-accent" data-dept="cs" data-search="数据结构 林知夏 cs 202 计算机">
+          <div class="course-meta"><span>CS 202</span><span>计算机学院</span></div>
+          <h3>数据结构</h3>
+          <p class="course-teacher">林知夏</p>
+          <p class="course-line">实验难度不低，建议提前把 C 语言学扎实。</p>
+          <div class="rating-row">
+            <strong>4.4</strong>
+            <span class="stars" role="img" aria-label="推荐度 4.4 分，满分 5 分">
+              <i class="ph-fill ph-star" aria-hidden="true"></i>
+              <i class="ph-fill ph-star" aria-hidden="true"></i>
+              <i class="ph-fill ph-star" aria-hidden="true"></i>
+              <i class="ph-fill ph-star" aria-hidden="true"></i>
+              <i class="ph-fill ph-star-half" aria-hidden="true"></i>
+            </span>
+            <span>156 条</span>
+          </div>
+          <ul class="tag-list"><li>实验多</li><li>硬核</li></ul>
+        </article>
+
+        <article class="course-card" data-dept="econ" data-search="微观经济学 周明远 econ 204 经济">
+          <div class="course-meta"><span>ECON 204</span><span>经济学院</span></div>
+          <h3>微观经济学</h3>
+          <p class="course-teacher">周明远</p>
+          <p class="course-line">模型讲得清楚，平时分给得比较大方。</p>
+          <div class="rating-row">
+            <strong>4.2</strong>
+            <span class="stars" role="img" aria-label="推荐度 4.2 分，满分 5 分">
+              <i class="ph-fill ph-star" aria-hidden="true"></i>
+              <i class="ph-fill ph-star" aria-hidden="true"></i>
+              <i class="ph-fill ph-star" aria-hidden="true"></i>
+              <i class="ph-fill ph-star" aria-hidden="true"></i>
+              <i class="ph-fill ph-star-half" aria-hidden="true"></i>
+            </span>
+            <span>96 条</span>
+          </div>
+          <ul class="tag-list"><li>给分好</li><li>不点名</li></ul>
+        </article>
+
+        <article class="course-card course-soft" data-dept="humanities" data-search="社会学概论 赵行舟 soc 101 人文">
+          <div class="course-meta"><span>SOC 101</span><span>人文学院</span></div>
+          <h3>社会学概论</h3>
+          <p class="course-teacher">赵行舟</p>
+          <p class="course-line">课堂讨论很多，愿意开口的人会很喜欢。</p>
+          <div class="rating-row">
+            <strong>4.1</strong>
+            <span class="stars" role="img" aria-label="推荐度 4.1 分，满分 5 分">
+              <i class="ph-fill ph-star" aria-hidden="true"></i>
+              <i class="ph-fill ph-star" aria-hidden="true"></i>
+              <i class="ph-fill ph-star" aria-hidden="true"></i>
+              <i class="ph-fill ph-star" aria-hidden="true"></i>
+              <i class="ph ph-star" aria-hidden="true"></i>
+            </span>
+            <span>63 条</span>
+          </div>
+          <ul class="tag-list"><li>讨论多</li><li>轻松</li></ul>
+        </article>
+      </div>
+
+      <div class="empty-state" data-empty-state hidden>
+        <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+        <h3>没有找到相关课程</h3>
+        <p>换个关键词，或者清除学院筛选再试一次。</p>
+        <button class="btn btn-secondary" type="button" data-reset-filter>清除筛选</button>
+      </div>
+    </section>
+
+    <section id="ranking" class="section shell" aria-labelledby="ranking-title">
+      <div class="section-head">
+        <h2 id="ranking-title">这周大家都在看</h2>
+        <div class="tabs" role="tablist" aria-label="榜单维度">
+          <button type="button" role="tab" aria-selected="true" data-rank-tab="recommend">推荐度</button>
+          <button type="button" role="tab" aria-selected="false" data-rank-tab="difficulty">难度</button>
+          <button type="button" role="tab" aria-selected="false" data-rank-tab="workload">作业量</button>
+        </div>
+      </div>
+
+      <ol class="rank-list" data-rank-list>
+        <li data-recommend="4.7" data-difficulty="2.1" data-workload="2.6">
+          <span class="rank">1</span>
+          <div class="rank-course"><strong>中国现代文学</strong><span>陈嘉禾 · LIT 118</span></div>
+          <div class="rank-score"><strong>4.7</strong><span class="stars" role="img" aria-label="评分 4.7 分"><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph-fill ph-star-half" aria-hidden="true"></i></span></div>
+          <span class="rank-count">74 条评价</span>
+          <span class="trend"><i class="ph ph-arrow-up" aria-hidden="true"></i> 上升 2</span>
+        </li>
+        <li data-recommend="4.6" data-difficulty="3.5" data-workload="4.2">
+          <span class="rank">2</span>
+          <div class="rank-course"><strong>操作系统</strong><span>王砚秋 · CS 301</span></div>
+          <div class="rank-score"><strong>4.6</strong><span class="stars" role="img" aria-label="评分 4.6 分"><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph-fill ph-star-half" aria-hidden="true"></i></span></div>
+          <span class="rank-count">128 条评价</span>
+          <span class="trend is-flat">持平</span>
+        </li>
+        <li data-recommend="4.4" data-difficulty="4.1" data-workload="4.5">
+          <span class="rank">3</span>
+          <div class="rank-course"><strong>数据结构</strong><span>林知夏 · CS 202</span></div>
+          <div class="rank-score"><strong>4.4</strong><span class="stars" role="img" aria-label="评分 4.4 分"><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph-fill ph-star-half" aria-hidden="true"></i></span></div>
+          <span class="rank-count">156 条评价</span>
+          <span class="trend"><i class="ph ph-arrow-up" aria-hidden="true"></i> 上升 1</span>
+        </li>
+        <li data-recommend="4.2" data-difficulty="2.8" data-workload="3.1">
+          <span class="rank">4</span>
+          <div class="rank-course"><strong>微观经济学</strong><span>周明远 · ECON 204</span></div>
+          <div class="rank-score"><strong>4.2</strong><span class="stars" role="img" aria-label="评分 4.2 分"><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph-fill ph-star-half" aria-hidden="true"></i></span></div>
+          <span class="rank-count">96 条评价</span>
+          <span class="trend is-down"><i class="ph ph-arrow-down" aria-hidden="true"></i> 下降 1</span>
+        </li>
+        <li data-recommend="4.1" data-difficulty="2.4" data-workload="2.9">
+          <span class="rank">5</span>
+          <div class="rank-course"><strong>社会学概论</strong><span>赵行舟 · SOC 101</span></div>
+          <div class="rank-score"><strong>4.1</strong><span class="stars" role="img" aria-label="评分 4.1 分"><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph-fill ph-star" aria-hidden="true"></i><i class="ph ph-star" aria-hidden="true"></i></span></div>
+          <span class="rank-count">63 条评价</span>
+          <span class="trend is-flat">新上榜</span>
+        </li>
+      </ol>
+      <p class="rank-note">榜单采用贝叶斯平均，至少 5 条评价才会上榜，学期筛选会重新计算排名。</p>
+    </section>
+
+    <section id="trust" class="section shell" aria-labelledby="trust-title">
+      <div class="section-head">
+        <h2 id="trust-title">匿名，但不失控</h2>
+        <a class="inline-link" href="#review">阅读评价规范 <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+      </div>
+
+      <div class="trust-layout">
+        <article id="review" class="review-card">
+          <header>
+            <div class="anon-avatar" aria-hidden="true">匿</div>
+            <div>
+              <strong>匿名同学</strong>
+              <span>2025 秋 · 操作系统</span>
+            </div>
+            <span class="verified"><i class="ph ph-check-circle" aria-hidden="true"></i> 已选课</span>
+          </header>
+
+          <div class="review-scores">
+            <div><span>难度</span><strong>3.5</strong></div>
+            <div><span>作业量</span><strong>4.2</strong></div>
+            <div><span>推荐度</span><strong>4.6</strong></div>
+          </div>
+
+          <p class="review-body">王老师会把进程调度讲成一场现场演示，期末复习把课上例子过一遍就够了。作业偏多，但每道题都能在实验里找到对应。</p>
+
+          <ul class="tag-list"><li>干货多</li><li>作业多</li><li>给分好</li></ul>
+
+          <footer>
+            <button class="action" type="button"><i class="ph ph-thumbs-up" aria-hidden="true"></i> 有用 42</button>
+            <button class="action" type="button"><i class="ph ph-flag" aria-hidden="true"></i> 举报</button>
+            <span class="review-time">2025 年 12 月</span>
+          </footer>
+        </article>
+
+        <aside class="trust-aside">
+          <div class="trust-item">
+            <i class="ph ph-shield-check" aria-hidden="true"></i>
+            <div>
+              <h3>账号只用来防重复</h3>
+              <p>一人对同一班次只能评一次，减少刷分和重复评价。</p>
+            </div>
+          </div>
+          <div class="trust-item">
+            <i class="ph ph-eye-slash" aria-hidden="true"></i>
+            <div>
+              <h3>公开页不显示身份</h3>
+              <p>不展示昵称、头像或主页，评价以匿名形式出现。</p>
+            </div>
+          </div>
+          <div class="trust-item">
+            <i class="ph ph-chart-bar" aria-hidden="true"></i>
+            <div>
+              <h3>小样本不展示分数</h3>
+              <p>少于 5 条评价时只显示样本不足，避免从分数反推个人。</p>
+            </div>
+          </div>
+          <p class="trust-note"><i class="ph ph-info" aria-hidden="true"></i> 设计演示页，数据为示例。</p>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <div class="footer-brand">
+        <span class="brand-mark" aria-hidden="true">课</span>
+        <div><strong>课代表</strong><span>CLASSREP</span></div>
+      </div>
+      <p class="footer-note">后台实名、前台匿名。评价用于帮助学生选课，不用于公开点名。</p>
+      <div class="footer-links">
+        <a href="#courses">课程库</a>
+        <a href="#ranking">排行榜</a>
+        <a href="#trust">评价规范</a>
+      </div>
+    </div>
+    <div class="shell footer-bottom">
+      <span>2026 课代表</span>
+      <span>设计演示，数据为示例</span>
+    </div>
+  </footer>
+
+  <script src="/node_modules/gsap/dist/gsap.min.js"></script>
+  <script src="/node_modules/gsap/dist/ScrollTrigger.min.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>
