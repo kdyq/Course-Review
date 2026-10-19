@@ -4,7 +4,7 @@ const { chromium } = require("playwright-core");
 
 const CHROME = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 const BASE = "http://127.0.0.1:4173";
-const OUT = path.join(__dirname, "..", "design", "screenshots");
+const OUT = path.join(__dirname, "..", "screenshots");
 
 fs.mkdirSync(OUT, { recursive: true });
 
