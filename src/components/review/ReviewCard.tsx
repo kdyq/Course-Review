@@ -1,10 +1,26 @@
+import { HelpfulButton } from "@/components/review/HelpfulButton";
+import { ReportDialog } from "@/components/review/ReportDialog";
 import { StarRating } from "@/components/zine/StarRating";
 import { TagList } from "@/components/zine/Tag";
 import { zineCardClass } from "@/components/zine/ZineCard";
 import type { PublicReview } from "@/lib/anonymity";
 import { assessmentLabel, formatMonth } from "@/lib/format";
 
-export function ReviewCard({ review, termName }: { review: PublicReview; termName: string }) {
+type ReviewCardProps = {
+  review: PublicReview;
+  termName: string;
+  helpfulState?: {
+    active: boolean;
+    disabled?: boolean;
+    disabledReason?: string;
+  };
+  reportState?: {
+    disabled?: boolean;
+    disabledReason?: string;
+  };
+};
+
+export function ReviewCard({ review, termName, helpfulState, reportState }: ReviewCardProps) {
   return (
     <article className={zineCardClass({ className: "review-card" })}>
       <div className="review-card__head">
@@ -64,8 +80,24 @@ export function ReviewCard({ review, termName }: { review: PublicReview; termNam
       ) : null}
 
       <div className="review-card__foot">
-        <span className="mono muted">有用 {review.helpfulCount}</span>
-        <span className="mono muted">有用与举报操作在 M4 接入</span>
+        {helpfulState ? (
+          <HelpfulButton
+            reviewId={review.id}
+            initialCount={review.helpfulCount}
+            initiallyActive={helpfulState.active}
+            disabled={helpfulState.disabled}
+            disabledReason={helpfulState.disabledReason}
+          />
+        ) : (
+          <span className="mono muted">有用 {review.helpfulCount}</span>
+        )}
+        {reportState ? (
+          <ReportDialog
+            reviewId={review.id}
+            disabled={reportState.disabled}
+            disabledReason={reportState.disabledReason}
+          />
+        ) : null}
       </div>
     </article>
   );

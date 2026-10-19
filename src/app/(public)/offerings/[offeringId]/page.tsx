@@ -9,7 +9,12 @@ import { ZineLinkButton } from "@/components/zine/ZineButton";
 import { zineCardClass } from "@/components/zine/ZineCard";
 import { formatScore, hasEnoughSamples } from "@/lib/format";
 import { getSession } from "@/lib/session";
-import { getOfferingDetail, getViewerReview, parseOfferingSort } from "@/server/queries/offerings";
+import {
+  getOfferingDetail,
+  getViewerReview,
+  getViewerVotes,
+  parseOfferingSort,
+} from "@/server/queries/offerings";
 
 type PageProps = {
   params: Promise<{ offeringId: string }>;
@@ -44,7 +49,13 @@ export default async function OfferingDetailPage({ params, searchParams }: PageP
     notFound();
   }
 
-  const viewer = await getViewerReview(offeringId, session?.user?.id);
+  const [viewer, viewerVotes] = await Promise.all([
+    getViewerReview(offeringId, session?.user?.id),
+    getViewerVotes(
+      detail.reviews.map((review) => review.id),
+      session?.user?.id,
+    ),
+  ]);
   const { offering, stats, tagCounts, reviews } = detail;
   const enough = hasEnoughSamples(stats.count);
   const instructors =
@@ -146,9 +157,25 @@ export default async function OfferingDetailPage({ params, searchParams }: PageP
             </div>
 
             {reviews.length > 0 ? (
-              reviews.map((review) => (
-                <ReviewCard key={review.id} review={review} termName={offering.termName} />
-              ))
+              reviews.map((review) => {
+                const isOwnReview = viewer?.reviewId === review.id;
+                return (
+                  <ReviewCard
+                    key={review.id}
+                    review={review}
+                    termName={offering.termName}
+                    helpfulState={{
+                      active: viewerVotes.has(review.id),
+                      disabled: !session || isOwnReview,
+                      disabledReason: !session ? "登录后可以点有用" : "不能给自己的评价投票",
+                    }}
+                    reportState={{
+                      disabled: !session || isOwnReview,
+                      disabledReason: !session ? "登录后可以举报" : "不能举报自己的评价",
+                    }}
+                  />
+                );
+              })
             ) : (
               <EmptyState
                 title="还没有评价"

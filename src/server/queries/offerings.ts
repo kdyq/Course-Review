@@ -120,6 +120,20 @@ export async function getOfferingDetail(
   };
 }
 
+export async function getViewerVotes(
+  reviewIds: string[],
+  userId: string | undefined,
+): Promise<Set<string>> {
+  if (!userId || reviewIds.length === 0) {
+    return new Set();
+  }
+  const votes = await prisma.reviewVote.findMany({
+    where: { userId, reviewId: { in: reviewIds } },
+    select: { reviewId: true },
+  });
+  return new Set(votes.map((vote) => vote.reviewId));
+}
+
 export async function getViewerReview(
   offeringId: string,
   userId: string | undefined,

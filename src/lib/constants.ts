@@ -55,6 +55,17 @@ export const REPORT_REASON_LABELS: Record<string, string> = {
   OTHER: "其他",
 };
 
+export const REPORT_REASON_VALUES = [
+  "PERSONAL_ATTACK",
+  "PRIVACY",
+  "AD",
+  "FALSE_INFO",
+  "OFF_TOPIC",
+  "OTHER",
+] as const;
+
+export type ReportReasonValue = (typeof REPORT_REASON_VALUES)[number];
+
 export const REPORT_STATUS_LABELS: Record<string, string> = {
   PENDING: "待处理",
   REVIEWING: "处理中",

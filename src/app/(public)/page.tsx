@@ -1,103 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { HeroMotion } from "@/components/home/HeroMotion";
+import { EmptyState } from "@/components/zine/EmptyState";
 import { SectionTitle } from "@/components/zine/SectionTitle";
 import { StarRating } from "@/components/zine/StarRating";
 import { Sticker } from "@/components/zine/Sticker";
 import { TagList } from "@/components/zine/Tag";
 import { ZineLinkButton } from "@/components/zine/ZineButton";
 import { type ZinePaper, zineCardClass } from "@/components/zine/ZineCard";
-import { formatTerm } from "@/lib/format";
+import { formatTerm, truncate } from "@/lib/format";
+import { getHomeData } from "@/server/queries/home";
 
-type DemoReview = {
-  id: string;
-  course: string;
-  code: string;
-  teacher: string;
-  term: string;
-  recommendation: number;
-  difficulty: number;
-  workload: number;
-  excerpt: string;
-  tags: string[];
-  paper: ZinePaper;
-  tilt: string;
-  tape: boolean;
-};
-
-const recentReviews: DemoReview[] = [
-  {
-    id: "r1",
-    course: "操作系统",
-    code: "CS301",
-    teacher: "王砚秋",
-    term: "2026-2027-1",
-    recommendation: 5,
-    difficulty: 4,
-    workload: 4,
-    excerpt:
-      "实验多，但每次都有明确的检查点。讲进程调度那几周会留出时间答疑，期末闭卷，平时分给得实在。",
-    tags: ["干货多", "实验多"],
-    paper: "butter",
-    tilt: "tilt-left",
-    tape: true,
-  },
-  {
-    id: "r2",
-    course: "微观经济学",
-    code: "ECON204",
-    teacher: "周明远",
-    term: "2026-2027-1",
-    recommendation: 4,
-    difficulty: 3,
-    workload: 2,
-    excerpt:
-      "板书推导很多，跟得上就很顺。作业每周一次，量不大。考试会给计算题清单，复习方向比较明确。",
-    tags: ["不点名", "给分好"],
-    paper: "mint",
-    tilt: "tilt-right",
-    tape: false,
-  },
-  {
-    id: "r3",
-    course: "中国现代文学",
-    code: "LIT118",
-    teacher: "陈嘉禾",
-    term: "2026-2027-1",
-    recommendation: 5,
-    difficulty: 2,
-    workload: 3,
-    excerpt:
-      "每周读一篇作品，课上讨论。论文题目可以自己选，老师会给很细的修改意见。适合愿意开口的人。",
-    tags: ["讨论多", "论文多"],
-    paper: "sky",
-    tilt: "tilt-left",
-    tape: true,
-  },
-  {
-    id: "r4",
-    course: "数据结构",
-    code: "CS202",
-    teacher: "林知夏",
-    term: "2026-2027-1",
-    recommendation: 4,
-    difficulty: 4,
-    workload: 4,
-    excerpt: "上机题和课堂内容贴得很紧，写完整套实验会对递归和树理解更深。不建议零基础直接冲。",
-    tags: ["硬核", "作业多"],
-    paper: "pink",
-    tilt: "tilt-right",
-    tape: false,
-  },
-];
-
-const leaderboard = [
-  { course: "操作系统", teacher: "王砚秋", score: "4.8", count: 18 },
-  { course: "数据结构", teacher: "林知夏", score: "4.7", count: 24 },
-  { course: "社会学概论", teacher: "赵行舟", score: "4.6", count: 9 },
-  { course: "中国现代文学", teacher: "陈嘉禾", score: "4.5", count: 12 },
-  { course: "微观经济学", teacher: "周明远", score: "4.4", count: 15 },
-];
+const CARD_PAPERS: ZinePaper[] = ["butter", "mint", "sky", "pink"];
+const CARD_TILTS = ["tilt-left", "tilt-right", "tilt-left", "tilt-right"];
 
 const prompts = [
   {
@@ -120,7 +35,13 @@ const prompts = [
   },
 ];
 
-export default function HomePage() {
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const data = await getHomeData();
+  const featured = data.latestReviews[0];
+  const leaderboardItems = data.leaderboard.items;
+
   return (
     <HeroMotion>
       <section className="shell hero">
@@ -150,13 +71,13 @@ export default function HomePage() {
           </div>
           <div className="hero-meta hero-fade">
             <span>
-              <strong>26</strong> 门课程
+              <strong>{data.stats.courseCount}</strong> 门课程
             </span>
             <span>
-              <strong>184</strong> 条评价
+              <strong>{data.stats.reviewCount}</strong> 条评价
             </span>
             <span>
-              <strong>10</strong> 位教师
+              <strong>{data.stats.instructorCount}</strong> 位教师
             </span>
           </div>
         </div>
@@ -174,16 +95,22 @@ export default function HomePage() {
           </figure>
           <div className="collage-note collage-piece tape-top">
             <div className="collage-note-head">
-              <span>操作系统</span>
-              <strong>4.8</strong>
+              <span>{featured?.courseName ?? "从一条评价开始"}</span>
+              <strong>{featured ? featured.review.recommendation.toFixed(1) : "5.0"}</strong>
             </div>
-            <StarRating value={4.8} label="推荐度" size={14} />
-            <p>实验多，但讲得清楚。期末闭卷，平时分给得实在。</p>
-            <span className="tiny mono">匿名同学 · 2026 秋</span>
+            <StarRating value={featured?.review.recommendation ?? 5} label="推荐度" size={14} />
+            <p>
+              {featured
+                ? truncate(featured.review.content, 46)
+                : "真实评价，匿名写下。先把第一条手账留在课程库里。"}
+            </p>
+            <span className="tiny mono">
+              匿名同学 · {featured ? formatTerm(featured.termName) : "本地数据"}
+            </span>
           </div>
           <div className="collage-small collage-piece">
-            <strong>作业量 4.2 / 5</strong>
-            <span>每周一次实验报告</span>
+            <strong>难度 {featured ? featured.review.difficulty : "-"} / 5</strong>
+            <span>作业量 {featured ? featured.review.workload : "-"} / 5</span>
           </div>
           <div className="collage-sticker collage-piece">
             <span>匿名</span>
@@ -201,46 +128,60 @@ export default function HomePage() {
               action={{ href: "/courses", label: "翻全部课程" }}
             />
           </div>
-          <div className="grid-4">
-            {recentReviews.map((review) => (
-              <article
-                key={review.id}
-                className={zineCardClass({
-                  paper: review.paper,
-                  className: `review-card reveal ${review.tilt}${review.tape ? " tape-top" : ""}`,
-                })}
-              >
-                <div className="review-card__head">
-                  <div>
-                    <h3 className="review-card__title">{review.course}</h3>
-                    <span className="course-code">
-                      {review.code} · {review.teacher}
-                    </span>
+
+          {data.latestReviews.length === 0 ? (
+            <EmptyState
+              title="还没有评价"
+              description="数据库里还没有已发布的评价。选一个班次，成为第一个写手账的人。"
+              action={<ZineLinkButton href="/courses">去翻课程</ZineLinkButton>}
+            />
+          ) : (
+            <div className="grid-4">
+              {data.latestReviews.map((item, index) => (
+                <article
+                  key={item.review.id}
+                  className={zineCardClass({
+                    paper: CARD_PAPERS[index % CARD_PAPERS.length],
+                    className: `review-card reveal ${CARD_TILTS[index % CARD_TILTS.length]}${
+                      index % 2 === 0 ? " tape-top" : ""
+                    }`,
+                  })}
+                >
+                  <div className="review-card__head">
+                    <div>
+                      <h3 className="review-card__title">{item.courseName}</h3>
+                      <span className="course-code">
+                        {item.courseCode}
+                        {item.instructorNames.length > 0
+                          ? ` · ${item.instructorNames.join("、")}`
+                          : ""}
+                      </span>
+                    </div>
+                    <Sticker tone="sky">{formatTerm(item.termName)}</Sticker>
                   </div>
-                  <Sticker tone="sky">{formatTerm(review.term)}</Sticker>
-                </div>
-                <div className="review-card__meta">
-                  <span>匿名同学</span>
-                  <span>推荐度 {review.recommendation}.0</span>
-                </div>
-                <p className="review-card__body">{review.excerpt}</p>
-                <TagList tags={review.tags} />
-                <div className="review-card__foot">
-                  <div className="score-pair">
-                    <span>
-                      难度 <strong>{review.difficulty}.0</strong>
-                    </span>
-                    <span>
-                      作业 <strong>{review.workload}.0</strong>
-                    </span>
+                  <div className="review-card__meta">
+                    <span>匿名同学</span>
+                    <span>推荐度 {item.review.recommendation}.0</span>
                   </div>
-                  <Link href="/courses" className="inline-link">
-                    看班次
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
+                  <p className="review-card__body">{truncate(item.review.content, 100)}</p>
+                  <TagList tags={item.review.tags.map((tag) => tag.name)} />
+                  <div className="review-card__foot">
+                    <div className="score-pair">
+                      <span>
+                        难度 <strong>{item.review.difficulty}</strong>
+                      </span>
+                      <span>
+                        作业 <strong>{item.review.workload}</strong>
+                      </span>
+                    </div>
+                    <Link href={`/offerings/${item.review.offeringId}`} className="inline-link">
+                      看班次
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -253,35 +194,54 @@ export default function HomePage() {
               action={{ href: "/leaderboards", label: "看完整榜单" }}
             />
           </div>
-          <div className="grid-2">
-            <div className="leaderboard reveal">
-              {leaderboard.map((item, index) => (
-                <div className="leader-row" key={item.course}>
-                  <span className="leader-rank">{index + 1}</span>
-                  <div className="leader-course">
-                    <strong>{item.course}</strong>
-                    <span>
-                      {item.teacher} · {item.count} 条评价
-                    </span>
+
+          {leaderboardItems.length === 0 ? (
+            <EmptyState
+              title="榜单还没有足够的数据"
+              description="至少需要 5 条已发布评价才能进入榜单。先去写一条评价吧。"
+              action={<ZineLinkButton href="/courses">去翻课程</ZineLinkButton>}
+            />
+          ) : (
+            <div className="grid-2">
+              <div className="leaderboard reveal">
+                {leaderboardItems.map((item, index) => (
+                  <div className="leader-row" key={item.courseId}>
+                    <span className="leader-rank">{index + 1}</span>
+                    <div className="leader-course">
+                      <strong>
+                        <Link href={`/courses/${item.courseId}`}>{item.courseName}</Link>
+                      </strong>
+                      <span>
+                        {item.instructors.length > 0 ? `${item.instructors.join("、")} · ` : ""}
+                        {item.count} 条评价
+                      </span>
+                    </div>
+                    <div className="leader-score">
+                      <strong>{item.score.toFixed(1)}</strong>
+                      <span>/ 5</span>
+                    </div>
                   </div>
-                  <div className="leader-score">
-                    <strong>{item.score}</strong>
-                    <span>/ 5</span>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
+              <div
+                className={zineCardClass({
+                  paper: "mint",
+                  pad: true,
+                  className: "rule-card reveal",
+                })}
+              >
+                <Sticker tone="coral">榜单规则</Sticker>
+                <h3>小样本不进榜</h3>
+                <p>
+                  榜单使用贝叶斯平均，避免一条极端高分把课程推到第一。选择学期后，只统计该学期班次的评价。
+                </p>
+                <p className="mono muted">score = (v / (v + m)) * R + (m / (v + m)) * C</p>
+                <p className="mono muted">
+                  当前 C = {data.leaderboard.globalAverage.toFixed(1)}，m = {data.leaderboard.m}
+                </p>
+              </div>
             </div>
-            <div
-              className={zineCardClass({ paper: "mint", pad: true, className: "rule-card reveal" })}
-            >
-              <Sticker tone="coral">榜单规则</Sticker>
-              <h3>小样本不进榜</h3>
-              <p>
-                榜单使用贝叶斯平均，避免一条极端高分把课程推到第一。选择学期后，只统计该学期班次的评价。
-              </p>
-              <p className="mono muted">score = (v / (v + m)) * R + (m / (v + m)) * C</p>
-            </div>
-          </div>
+          )}
         </div>
       </section>
 

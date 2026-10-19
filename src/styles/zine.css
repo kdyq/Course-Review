@@ -353,6 +353,13 @@ button {
   min-width: 120px;
 }
 
+.helpful-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
 .response-box {
   padding: 12px 14px;
   border: 2px dashed var(--rule-soft);
@@ -923,6 +930,14 @@ button {
   font-weight: 900;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.leader-course a {
+  text-decoration: none;
+}
+
+.leader-course a:hover {
+  color: var(--coral-deep);
 }
 
 .leader-course span {

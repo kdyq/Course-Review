@@ -31,7 +31,7 @@ export function SiteFooter() {
         </div>
         <div className="footer-bottom">
           <span>{SITE_NAME_EN} · 本地开发版本</span>
-          <span>当前为设计演示，数据为示例</span>
+          <span>数据来自本地 PostgreSQL</span>
         </div>
       </div>
     </footer>
