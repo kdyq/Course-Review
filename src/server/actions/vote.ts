@@ -3,7 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { ReviewStatus } from "@/generated/prisma/client";
 import { type ActionResult, actionError } from "@/lib/action-result";
+import { RATE_LIMITS } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { getSession } from "@/lib/session";
 
 function revalidateVotePaths(courseId: string, offeringId: string): void {
@@ -28,6 +30,11 @@ export async function toggleHelpfulAction(
   }
 
   const userId = session.user.id;
+  const voteLimit = checkRateLimit(`vote:hour:${userId}`, RATE_LIMITS.votesPerHour, 60 * 60 * 1000);
+  if (!voteLimit.ok) {
+    return actionError("RATE_LIMITED", "点有用太频繁，请稍后再试");
+  }
+
   const review = await prisma.review.findUnique({
     where: { id: reviewId },
     select: {

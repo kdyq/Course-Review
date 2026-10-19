@@ -18,6 +18,16 @@ export const auth = betterAuth({
     maxPasswordLength: 64,
     requireEmailVerification: false,
   },
+  rateLimit: {
+    enabled: true,
+    window: 60,
+    // 全局上限只用于保护其他认证端点；登录和注册由下面的 customRules 严格限制。
+    max: 200,
+    customRules: {
+      "/sign-in/username": { window: 60, max: 10 },
+      "/sign-up/email": { window: 3600, max: 5 },
+    },
+  },
   user: {
     additionalFields: {
       role: {

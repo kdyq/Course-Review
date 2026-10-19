@@ -4,7 +4,9 @@ import { revalidatePath } from "next/cache";
 import type { ZodError } from "zod";
 import { ReportStatus, ReviewStatus } from "@/generated/prisma/client";
 import { type ActionResult, actionError } from "@/lib/action-result";
+import { RATE_LIMITS } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { getSession } from "@/lib/session";
 import { type ReportInput, reportInputSchema } from "@/lib/validation/report";
 
@@ -36,6 +38,15 @@ export async function createReportAction(
   }
 
   const userId = session.user.id;
+  const reportLimit = checkRateLimit(
+    `report:day:${userId}`,
+    RATE_LIMITS.reportsPerDay,
+    24 * 60 * 60 * 1000,
+  );
+  if (!reportLimit.ok) {
+    return actionError("RATE_LIMITED", "今天举报次数已达上限");
+  }
+
   const data = parsed.data;
   const review = await prisma.review.findUnique({
     where: { id: data.reviewId },

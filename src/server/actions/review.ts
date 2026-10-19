@@ -4,8 +4,9 @@ import { revalidatePath } from "next/cache";
 import type { z } from "zod";
 import { ReviewStatus } from "@/generated/prisma/client";
 import { type ActionResult, actionError } from "@/lib/action-result";
-import { EDIT_WINDOW_DAYS, NEW_ACCOUNT } from "@/lib/constants";
+import { EDIT_WINDOW_DAYS, NEW_ACCOUNT, RATE_LIMITS } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { canEditReview } from "@/lib/review-window";
 import { getSession } from "@/lib/session";
 import {
@@ -108,6 +109,23 @@ export async function createReviewAction(
   }
 
   const userId = auth.session.user.id;
+  const hourly = checkRateLimit(
+    `review:hour:${userId}`,
+    RATE_LIMITS.reviewsPerHour,
+    60 * 60 * 1000,
+  );
+  if (!hourly.ok) {
+    return actionError("RATE_LIMITED", "发评价太频繁，请稍后再试");
+  }
+  const daily = checkRateLimit(
+    `review:day:${userId}`,
+    RATE_LIMITS.reviewsPerDay,
+    24 * 60 * 60 * 1000,
+  );
+  if (!daily.ok) {
+    return actionError("RATE_LIMITED", "今天发评价次数已达上限");
+  }
+
   const data = parsed.data;
 
   const offering = await prisma.offering.findUnique({
@@ -185,6 +203,15 @@ export async function updateReviewAction(
   }
 
   const userId = auth.session.user.id;
+  const edits = checkRateLimit(
+    `review:edit:${userId}`,
+    RATE_LIMITS.editsPerDay,
+    24 * 60 * 60 * 1000,
+  );
+  if (!edits.ok) {
+    return actionError("RATE_LIMITED", "今天编辑次数已达上限");
+  }
+
   const data = parsed.data;
 
   const author = await prisma.reviewAuthor.findUnique({
