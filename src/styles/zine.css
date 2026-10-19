@@ -340,6 +340,40 @@ button {
   padding: 22px;
 }
 
+.zine-card h2 {
+  margin: 0 0 12px;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.select--inline {
+  width: auto;
+  min-width: 120px;
+}
+
+.response-box {
+  padding: 12px 14px;
+  border: 2px dashed var(--rule-soft);
+  border-radius: 12px;
+  background: var(--paper-2);
+}
+
+.response-box p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.offering-row h3 a {
+  text-decoration: none;
+}
+
+.offering-row h3 a:hover {
+  color: var(--coral-deep);
+}
+
 .tape-top::before {
   content: "";
   position: absolute;

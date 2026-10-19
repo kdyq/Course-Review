@@ -1,4 +1,4 @@
-import { COURSE_TYPE_LABELS, MIN_SAMPLE_SIZE } from "@/lib/constants";
+import { ASSESSMENT_OPTIONS, COURSE_TYPE_LABELS, MIN_SAMPLE_SIZE } from "@/lib/constants";
 
 export function formatScore(value: number | null | undefined): string {
   if (value === null || value === undefined || Number.isNaN(value)) {
@@ -37,6 +37,27 @@ export function formatDate(date: Date | string): string {
 
 export function courseTypeLabel(type: string): string {
   return COURSE_TYPE_LABELS[type] ?? type;
+}
+
+export function assessmentLabel(value: string): string {
+  return ASSESSMENT_OPTIONS.find((option) => option.value === value)?.label ?? value;
+}
+
+export function average(values: number[]): number | null {
+  if (values.length === 0) {
+    return null;
+  }
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+export function distributionOf(values: number[]): number[] {
+  const distribution = [0, 0, 0, 0, 0];
+  for (const value of values) {
+    if (value >= 1 && value <= 5) {
+      distribution[value - 1] += 1;
+    }
+  }
+  return distribution;
 }
 
 export function hasEnoughSamples(count: number, minimum = MIN_SAMPLE_SIZE): boolean {
