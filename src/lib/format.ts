@@ -28,6 +28,17 @@ export function formatMonth(date: Date | string): string {
   return `${value.getFullYear()} 年 ${value.getMonth() + 1} 月`;
 }
 
+export function formatDateTime(date: Date | string): string {
+  const value = typeof date === "string" ? new Date(date) : date;
+  return new Intl.DateTimeFormat("zh-CN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(value);
+}
+
 export function formatDate(date: Date | string): string {
   const value = typeof date === "string" ? new Date(date) : date;
   const month = String(value.getMonth() + 1).padStart(2, "0");

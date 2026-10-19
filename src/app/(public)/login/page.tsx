@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "登录" };
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; error?: string }>;
 }) {
   const params = await searchParams;
   const next = params.next?.startsWith("/") ? params.next : "/";
@@ -19,6 +19,11 @@ export default async function LoginPage({
       <section className="section section--tight">
         <div className="shell auth-grid">
           <div className={zineCardClass({ pad: true })}>
+            {params.error === "suspended" ? (
+              <p className="form-error" role="alert">
+                账号已被停用，请联系管理员。
+              </p>
+            ) : null}
             <LoginForm next={next} />
           </div>
           <div className={zineCardClass({ paper: "butter", pad: true, className: "prose" })}>

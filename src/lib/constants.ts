@@ -39,6 +39,10 @@ export const COURSE_TYPE_LABELS: Record<string, string> = {
   PRACTICE: "实践",
 };
 
+export const COURSE_TYPE_VALUES = ["REQUIRED", "ELECTIVE", "GENERAL", "PRACTICE"] as const;
+
+export type CourseTypeValue = (typeof COURSE_TYPE_VALUES)[number];
+
 export const REVIEW_STATUS_LABELS: Record<string, string> = {
   PENDING: "待审核",
   PUBLISHED: "已发布",
@@ -78,6 +82,12 @@ export const ROLE_LABELS: Record<string, string> = {
   INSTRUCTOR: "教师",
   MODERATOR: "审核员",
   ADMIN: "管理员",
+};
+
+export const USER_STATUS_LABELS: Record<string, string> = {
+  ACTIVE: "正常",
+  SUSPENDED: "已封禁",
+  DELETED: "已删除",
 };
 
 export const ASSESSMENT_OPTIONS = [

@@ -1827,6 +1827,43 @@ button {
   margin-top: 24px;
 }
 
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.tag-form-inline .input {
+  width: 160px;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.checkbox-row input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--coral);
+}
+
+.preview-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+details > summary {
+  cursor: pointer;
+}
+
 /* Prose and helper blocks */
 .prose h2 {
   margin: 24px 0 8px;

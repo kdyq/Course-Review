@@ -22,6 +22,11 @@ export async function toggleHelpfulAction(
     return actionError("UNAUTHENTICATED", "请先登录");
   }
 
+  const status = (session.user as { status?: string }).status;
+  if (status && status !== "ACTIVE") {
+    return actionError("ACCOUNT_DISABLED", "账号当前不可用");
+  }
+
   const userId = session.user.id;
   const review = await prisma.review.findUnique({
     where: { id: reviewId },

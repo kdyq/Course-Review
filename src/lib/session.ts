@@ -12,6 +12,10 @@ export async function requireUser() {
   if (!session?.user) {
     redirect("/login");
   }
+  const status = (session.user as { status?: string }).status;
+  if (status && status !== "ACTIVE") {
+    redirect("/login?error=suspended");
+  }
   return session;
 }
 
