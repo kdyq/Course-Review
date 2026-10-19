@@ -27,9 +27,12 @@ export default async function MePage() {
             <h2>你好，{user.username ?? user.name}</h2>
             <p>角色：{ROLE_LABELS[user.role ?? "STUDENT"] ?? "学生"}</p>
             <p>邮箱：{user.email}</p>
-            <p>我的评价、收藏和通知会在后续里程碑接入。现在可以先去翻课程。</p>
+            <p>在这里管理账号和评价。收藏和通知会在后续里程碑接入。</p>
             <div className="row section-action">
-              <ZineLinkButton href="/courses">去翻课程</ZineLinkButton>
+              <ZineLinkButton href="/me/reviews">我的评价</ZineLinkButton>
+              <ZineLinkButton href="/courses" variant="secondary">
+                去翻课程
+              </ZineLinkButton>
               <ZineLinkButton href="/leaderboards" variant="secondary">
                 看榜单
               </ZineLinkButton>

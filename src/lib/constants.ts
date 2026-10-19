@@ -82,7 +82,10 @@ export const ASSESSMENT_OPTIONS = [
 
 export type AssessmentValue = (typeof ASSESSMENT_OPTIONS)[number]["value"];
 
-export const ASSESSMENT_VALUES = ASSESSMENT_OPTIONS.map((item) => item.value) as string[];
+export const ASSESSMENT_VALUES = ASSESSMENT_OPTIONS.map((item) => item.value) as [
+  AssessmentValue,
+  ...AssessmentValue[],
+];
 
 export const PRESET_TAGS = [
   "干货多",

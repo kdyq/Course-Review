@@ -153,9 +153,7 @@ export default async function OfferingDetailPage({ params, searchParams }: PageP
               <EmptyState
                 title="还没有评价"
                 description="这个班次还没有已发布的评价。你可以成为第一个写手账的人。"
-                action={
-                  <ZineLinkButton href={`/write?offering=${offering.id}`}>写评价</ZineLinkButton>
-                }
+                action={<ZineLinkButton href={`/write/${offering.id}`}>写评价</ZineLinkButton>}
               />
             )}
           </div>
@@ -173,14 +171,26 @@ export default async function OfferingDetailPage({ params, searchParams }: PageP
               </h2>
               <p>
                 {viewer
-                  ? "同一班次只能写一条评价。可以到个人中心查看状态，编辑功能会在 M3 接入。"
+                  ? "同一班次只能写一条评价。发布后 7 天内可以编辑，也可以到个人中心查看状态。"
                   : "评价会匿名展示。写清楚难度、作业量和考核方式，比一句“给分好”更有用。"}
               </p>
               <ZineLinkButton
-                href={viewer ? "/me" : `/write?offering=${offering.id}`}
+                href={
+                  viewer
+                    ? viewer.status === "PUBLISHED" || viewer.status === "PENDING"
+                      ? `/write/${offering.id}?edit=${viewer.reviewId}`
+                      : "/me/reviews"
+                    : `/write/${offering.id}`
+                }
                 variant={viewer ? "secondary" : "primary"}
               >
-                {viewer ? "查看我的评价" : "写评价"}
+                {viewer
+                  ? viewer.status === "PUBLISHED"
+                    ? "编辑我的评价"
+                    : viewer.status === "PENDING"
+                      ? "查看待审核评价"
+                      : "查看我的评价"
+                  : "写评价"}
               </ZineLinkButton>
             </div>
 
