@@ -1777,11 +1777,9 @@ button {
 }
 
 /* Auth and user menu */
-.auth-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.8fr);
-  gap: 24px;
-  align-items: start;
+.auth-card {
+  width: min(520px, 100%);
+  margin-inline: auto;
 }
 
 .user-menu {
@@ -1990,10 +1988,6 @@ details > summary {
 @media (max-width: 1024px) {
   .header-search {
     display: none;
-  }
-
-  .auth-grid {
-    grid-template-columns: 1fr;
   }
 }
 

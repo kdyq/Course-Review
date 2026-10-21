@@ -33,7 +33,7 @@ async function register(page: Page, username: string) {
   await page.fill("#register-email", `${username}@example.local`);
   await page.fill("#register-password", "Test1234");
   await page.fill("#register-confirm", "Test1234");
-  await page.click('.auth-grid form button[type="submit"]');
+  await page.click('.auth-card form button[type="submit"]');
   await page.waitForURL("**/me", { timeout: 30000 });
 }
 
@@ -42,7 +42,7 @@ async function login(page: Page, username: string, password: string) {
   await waitForHydration(page);
   await page.fill("#login-username", username);
   await page.fill("#login-password", password);
-  await page.click('.auth-grid form button[type="submit"]');
+  await page.click('.auth-card form button[type="submit"]');
   await page.waitForURL("**/", { timeout: 30000 });
 }
 

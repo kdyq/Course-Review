@@ -12,7 +12,7 @@ async function loginAdmin(page: Page) {
   await waitForHydration(page);
   await page.fill("#login-username", "guo");
   await page.fill("#login-password", "123456");
-  await page.click('.auth-grid form button[type="submit"]');
+  await page.click('.auth-card form button[type="submit"]');
   await page.waitForURL("**/", { timeout: 30000 });
 }
 

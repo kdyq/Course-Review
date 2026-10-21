@@ -39,7 +39,7 @@ test("管理员审核列表默认不显示作者", async ({ page }) => {
   await page.waitForSelector(".user-menu-loading", { state: "detached" });
   await page.fill("#login-username", "guo");
   await page.fill("#login-password", "123456");
-  await page.click('.auth-grid form button[type="submit"]');
+  await page.click('.auth-card form button[type="submit"]');
   await page.waitForURL("**/", { timeout: 30000 });
 
   await page.goto("/admin/reviews", { waitUntil: "networkidle" });
