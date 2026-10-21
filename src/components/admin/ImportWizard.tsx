@@ -115,7 +115,7 @@ export function ImportWizard() {
             setMessage(null);
           }}
         >
-          填入示例
+          填入模板
         </button>
       </div>
 

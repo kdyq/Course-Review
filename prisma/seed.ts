@@ -415,7 +415,7 @@ async function main() {
   await prisma.user.create({
     data: {
       id: studentId,
-      name: "演示学生",
+      name: "手账同学",
       email: "student01@example.local",
       emailVerified: true,
       username: "student01",
@@ -590,7 +590,7 @@ async function main() {
           updatedAt: createdAt,
           editedAt: reviewIndex % 9 === 0 ? new Date(createdAt.getTime() + 86400000 * 3) : null,
           hiddenAt: status === ReviewStatus.HIDDEN ? createdAt : null,
-          hiddenReason: status === ReviewStatus.HIDDEN ? "示例：评价包含不适宜内容" : null,
+          hiddenReason: status === ReviewStatus.HIDDEN ? "评价包含不适宜内容" : null,
         },
       });
 
@@ -641,7 +641,7 @@ async function main() {
         reviewId: review.id,
         reporterId: reporter.id,
         reason: index % 2 === 0 ? ReportReason.PRIVACY : ReportReason.PERSONAL_ATTACK,
-        detail: index % 2 === 0 ? "示例举报：疑似包含个人联系方式。" : "示例举报：疑似人身攻击。",
+        detail: index % 2 === 0 ? "疑似包含个人联系方式。" : "疑似人身攻击。",
         status: ReportStatus.PENDING,
       },
     });
@@ -677,9 +677,9 @@ async function main() {
   );
   console.log(`用户 ${seedUsers.length + 2}，评价 ${reviewCount}，有用投票 ${voteCount}`);
   console.log("");
-  console.log("本地演示账号：");
+  console.log("种子账号：");
   console.log(`管理员：${adminUsername} / ${adminPassword}`);
-  console.log("演示学生：student01 / Student2026");
+  console.log("学生账号：student01 / Student2026");
 }
 
 main()

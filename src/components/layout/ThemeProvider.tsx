@@ -44,7 +44,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     try {
       window.localStorage.setItem(THEME_STORAGE_KEY, next);
     } catch {
-      // 本地存储不可用时只切换当前页面。
+      // 浏览器存储不可用时只切换当前页面。
     }
   }, []);
 

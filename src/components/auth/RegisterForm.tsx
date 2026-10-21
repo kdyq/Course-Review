@@ -125,9 +125,7 @@ export function RegisterForm() {
           autoComplete="email"
           required
         />
-        <span className="form-hint">
-          邮箱用于后续验证和找回账号。注册后可以在个人中心验证，本地开发默认不强制。
-        </span>
+        <span className="form-hint">邮箱用于验证和找回账号。注册后可以在个人中心发送验证码。</span>
       </div>
 
       <div className="field">

@@ -35,7 +35,7 @@ export function VerifyEmailForm({ email, verified }: { email: string; verified: 
         return;
       }
       setSent(true);
-      setMessage("验证码已发送。本地开发默认只写入服务端日志，不会真实发信。");
+      setMessage("验证码已发送，请检查邮箱（包括垃圾邮件）。验证码 5 分钟内有效。");
     } catch {
       setError("验证码发送失败，请稍后再试");
     } finally {

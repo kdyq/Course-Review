@@ -105,7 +105,7 @@ export default async function HomePage() {
                 : "真实评价，匿名写下。先把第一条手账留在课程库里。"}
             </p>
             <span className="tiny mono">
-              匿名同学 · {featured ? formatTerm(featured.termName) : "本地数据"}
+              匿名同学 · {featured ? formatTerm(featured.termName) : "等待第一条评价"}
             </span>
           </div>
           <div className="collage-small collage-piece">

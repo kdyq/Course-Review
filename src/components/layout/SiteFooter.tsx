@@ -30,8 +30,8 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="footer-bottom">
-          <span>{SITE_NAME_EN} · 本地开发版本</span>
-          <span>数据来自本地 PostgreSQL</span>
+          <span>{SITE_NAME_EN}</span>
+          <span>选课之前，先翻手账</span>
         </div>
       </div>
     </footer>

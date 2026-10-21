@@ -7,10 +7,7 @@ export const metadata: Metadata = { title: "隐私说明" };
 export default function PrivacyPage() {
   return (
     <>
-      <PageHead
-        title="隐私说明"
-        description="这是本地开发版本，不对外提供服务。以下说明描述系统的设计意图。"
-      />
+      <PageHead title="隐私说明" description="以下说明描述系统如何收集、使用和保护数据。" />
       <section className="section section--tight">
         <div className="shell">
           <div className={zineCardClass({ pad: true, className: "prose" })}>
@@ -24,11 +21,9 @@ export default function PrivacyPage() {
               条评价时不显示平均分和分布，降低反推身份的可能。
             </p>
             <h2>保留多久</h2>
-            <p>
-              账号注销时删除作者映射，保留评价正文。举报和处理记录用于治理和审计。本地开发数据可随时重置。
-            </p>
+            <p>账号注销时删除作者映射，保留评价正文。举报和处理记录用于治理和审计。</p>
             <h2>联系方式</h2>
-            <p>本地项目不设公开联系方式。正式对外运营前需要补充用户协议、隐私政策和申诉渠道。</p>
+            <p>如需反馈问题，请使用评价卡片上的举报功能或联系管理员。</p>
           </div>
         </div>
       </section>

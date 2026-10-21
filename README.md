@@ -2,7 +2,7 @@
 
 一个本地运行的学生匿名课程评价系统。评价对象是“课程 + 学期 + 教师 + 班次”组成的开课班次。前台匿名展示，后台保留必要的一人一评和治理能力。
 
-> 本地练手项目，不做部署。正式数据请只使用手动录入或已授权的 CSV。
+> 个人练手项目，不做部署。正式数据请只使用手动录入或已授权的 CSV。
 
 ## 已实现
 
@@ -26,7 +26,7 @@
 
 Next.js 16 App Router、React 19、TypeScript、Tailwind CSS 4、Radix UI、`@phosphor-icons/react`、GSAP、PostgreSQL 18、Prisma 7（`@prisma/adapter-pg`）、Better Auth、Zod、React Hook Form、Recharts、Vitest、Playwright、Biome。
 
-## 本地要求
+## 运行要求
 
 - Node.js 24 及以上，npm 11 及以上。
 - PostgreSQL 18，默认端口 5432。
@@ -71,7 +71,7 @@ npm run dev
 
 打开 <http://127.0.0.1:3000>。
 
-## 本地演示账号
+## 演示账号
 
 | 角色 | 用户名 | 密码 |
 |---|---|---|
@@ -91,13 +91,13 @@ QQ_SMTP_SECURE="true"
 QQ_SMTP_USER="你的 QQ 邮箱"
 QQ_SMTP_PASS="QQ 邮箱授权码"
 EMAIL_FROM="你的 QQ 邮箱"
-EMAIL_DELIVERY_MODE="log"
+EMAIL_DELIVERY_MODE="smtp"
 EMAIL_VERIFICATION_ENABLED="false"
 ```
 
-- 默认 `EMAIL_DELIVERY_MODE=log`，验证码只写入服务端日志，不会真实发信。本地开发不需要邮箱验证。
+- 默认 `EMAIL_DELIVERY_MODE=smtp`，验证码会通过 QQ SMTP 真实发送到用户邮箱。
 - 注册后可以在个人中心按需发送验证码。只有点击发送时才会生成验证码。
-- 如果要真实发信，把 `EMAIL_DELIVERY_MODE` 改为 `smtp`，并确认授权码可用。不要频繁发送，避免 QQ 邮箱触发风控。
+- 如果暂时不想真实发信，把 `EMAIL_DELIVERY_MODE` 改为 `log`，验证码只写入服务端日志。不要频繁发送，避免 QQ 邮箱触发风控。
 - 不要把 `.env` 提交到仓库。
 
 ## 常用脚本
@@ -169,7 +169,7 @@ docs/
 要点：
 
 - 登录使用用户名，不使用邮箱作为登录名。
-- 邮箱验证码在注册后按需发送，本地默认只写日志。
+- 邮箱验证码在注册后按需发送，默认通过 QQ SMTP 真实发送。
 - `REVIEW_MODERATION_ENABLED=false` 时，本地新账号发评直接发布；设为 `true` 后会启用注册冷却和前 3 条评价 PENDING。
 - 难度和作业量榜单按升序排列（越轻松、作业越少越靠前），推荐度按降序排列。
 - 收藏、站内通知、教师详情、教师回应、课程对比属于 P1，尚未实现。

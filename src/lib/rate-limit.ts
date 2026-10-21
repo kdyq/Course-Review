@@ -8,7 +8,7 @@ const buckets = new Map<string, Bucket>();
 export type RateLimitResult = { ok: true; remaining: number } | { ok: false; retryAfterMs: number };
 
 /**
- * 本地开发使用内存固定窗口限流。Redis 未接入时这就是回退方案。
+ * 当前使用内存固定窗口限流。Redis 未接入时作为回退方案。
  */
 export function checkRateLimit(key: string, limit: number, windowMs: number): RateLimitResult {
   const now = Date.now();
