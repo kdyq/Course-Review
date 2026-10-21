@@ -7,17 +7,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": [
-      "src/**/*.ts",
-      "src/**/*.tsx",
-      "!src/generated",
-      "prisma/**/*.ts",
-      "scripts/**/*.ts",
-      "tests/**/*.ts",
-      "tests/**/*.tsx",
-      "*.ts",
-      "*.mjs"
-    ]
+    "includes": ["src/**/*.ts", "src/**/*.tsx", "!src/generated", "prisma/**/*.ts", "*.ts", "*.mjs"]
   },
   "formatter": {
     "enabled": true,

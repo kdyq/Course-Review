@@ -37,7 +37,6 @@
   ],
   "exclude": [
     "node_modules",
-    "design",
     ".next/dev"
   ]
 }

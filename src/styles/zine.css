@@ -398,6 +398,7 @@ button {
 
 .sticker {
   display: inline-flex;
+  white-space: nowrap;
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
